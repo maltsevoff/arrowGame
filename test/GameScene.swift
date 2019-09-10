@@ -12,6 +12,8 @@ import GameplayKit
 class GameScene: SKScene {
 	
 	let arrow = SKSpriteNode(imageNamed: "arrow")
+	var touchedNodeHolder: SKNode?
+	var startTouchPosition: CGPoint?
 	
 	override func didMove(to view: SKView) {
 		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
@@ -50,8 +52,21 @@ class GameScene: SKScene {
 		return arrow
 	}
 	
-	var touchedNodeHolder: SKNode?
-	var startTouchPosition: CGPoint?
+	func shootArrow(touch: UITouch) {
+		let frontTouchedNode = atPoint(touch.location(in: self))
+		if frontTouchedNode != arrow {
+			return
+		}
+
+		let movingArrow = makeArrow(position: arrow.position)
+		addChild(movingArrow)
+		let actionMove = SKAction.move(to: CGPoint(x: movingArrow.position.x, y: size.height + movingArrow.size.height / 2), duration: 1.0)
+		let actionMoveDone = SKAction.removeFromParent()
+		movingArrow.run(SKAction.sequence([actionMove, actionMoveDone]))
+	}
+}
+
+extension GameScene {
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		guard let touch = touches.first else {
@@ -67,8 +82,8 @@ class GameScene: SKScene {
 			return
 		}
 		let pointOfTouch = touch.location(in: self)
-		if touchedNodeHolder == arrow {
-			touchedNodeHolder?.position = pointOfTouch
+		if touchedNodeHolder == arrow && pointOfTouch.y < size.width * 0.2 {
+			touchedNodeHolder?.position = CGPoint(x: pointOfTouch.x, y: arrow.position.y)
 		}
 	}
 	
@@ -80,18 +95,5 @@ class GameScene: SKScene {
 		if startTouchPosition == touch.location(in: self) {
 			shootArrow(touch: touch)
 		}
-	}
-	
-	func shootArrow(touch: UITouch) {
-		let frontTouchedNode = atPoint(touch.location(in: self))
-		if frontTouchedNode != arrow {
-			return
-		}
-
-		let movingArrow = makeArrow(position: arrow.position)
-		addChild(movingArrow)
-		let actionMove = SKAction.move(to: CGPoint(x: movingArrow.position.x, y: size.height + movingArrow.size.height / 2), duration: 1.0)
-		let actionMoveDone = SKAction.removeFromParent()
-		movingArrow.run(SKAction.sequence([actionMove, actionMoveDone]))
 	}
 }
