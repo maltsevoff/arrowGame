@@ -47,16 +47,22 @@ class GameScene: SKScene {
 		guard let touch = touches.first else {
 			return
 		}
-		let movingArrow = makeArrow()
+		
+		let frontTouchedNode = atPoint(touch.location(in: self))
+		if frontTouchedNode != arrow {
+			return
+		}
+		
+		let movingArrow = makeArrow(position: arrow.position)
 		addChild(movingArrow)
 		let actionMove = SKAction.move(to: CGPoint(x: movingArrow.position.x, y: size.height + movingArrow.size.height / 2), duration: 1.0)
 		let actionMoveDone = SKAction.removeFromParent()
 		movingArrow.run(SKAction.sequence([actionMove, actionMoveDone]))
 	}
 	
-	func makeArrow () -> SKSpriteNode {
+	func makeArrow(position: CGPoint) -> SKSpriteNode {
 		let arrow = SKSpriteNode(imageNamed: "arrow")
-		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
+		arrow.position = position
 		let sizeMultiplier: CGFloat = 0.3
 		arrow.size = CGSize(width: arrow.size.width * sizeMultiplier, height: arrow.size.height * sizeMultiplier)
 		return arrow
