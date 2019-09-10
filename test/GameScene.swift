@@ -15,6 +15,7 @@ class GameScene: SKScene {
 	var touchedNodeHolder: SKNode?
 	var startTouchPosition: CGPoint?
 	var score: Int = 0
+	var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
 	
 	override func didMove(to view: SKView) {
 		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
@@ -23,11 +24,20 @@ class GameScene: SKScene {
 		addChild(arrow)
 		physicsWorld.gravity = .zero
 		physicsWorld.contactDelegate = self
+		addScoreLabel()
 		
 		run(SKAction.repeatForever(SKAction.sequence([
 			SKAction.run(addTarget),
 			SKAction.wait(forDuration: 1.0)
 			])))
+	}
+	
+	func addScoreLabel() {
+		scoreLabel.text = "Score: \(score)"
+		scoreLabel.fontSize = 20
+		scoreLabel.fontColor = SKColor.black
+		scoreLabel.position = CGPoint(x: size.width * 0.1 , y: size.height * 0.9)
+		addChild(scoreLabel)
 	}
 	
 	func addTarget() {
@@ -107,6 +117,7 @@ extension GameScene : SKPhysicsContactDelegate {
 			if let target = firstBody.node as? SKSpriteNode, let arrow = secondBody.node as? SKSpriteNode {
 				checkContactPoint(contactPoint: contact.contactPoint, target: target)
 				arrowDidCollideWithTarget(arrow: arrow, target: target)
+				updateScoreLabel()
 			}
 		}
 	}
@@ -120,6 +131,10 @@ extension GameScene : SKPhysicsContactDelegate {
 		} else {
 			score += 1
 		}
+	}
+	
+	func updateScoreLabel() {
+		scoreLabel.text = "Score: \(score)"
 	}
 }
 
