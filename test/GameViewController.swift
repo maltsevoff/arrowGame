@@ -23,7 +23,9 @@ class GameViewController: UIViewController {
             view.ignoresSiblingOrder = true
             view.showsFPS = true
             view.showsNodeCount = true
+			view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         }
+//		view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
     }
 
 //    override var shouldAutorotate: Bool {
