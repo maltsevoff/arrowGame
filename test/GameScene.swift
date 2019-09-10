@@ -14,6 +14,7 @@ class GameScene: SKScene {
 	let arrow = SKSpriteNode(imageNamed: "arrow")
 	var touchedNodeHolder: SKNode?
 	var startTouchPosition: CGPoint?
+	var score: Int = 0
 	
 	override func didMove(to view: SKView) {
 		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
@@ -38,7 +39,6 @@ class GameScene: SKScene {
 		target.physicsBody?.categoryBitMask = PhysicsSettings.target
 		target.physicsBody?.contactTestBitMask = PhysicsSettings.arrow
 		target.physicsBody?.collisionBitMask = PhysicsSettings.none
-		print("Target size: \(target.size)")
 		
 		let actualY = size.height * CGFloat.random(in: 0.2 ... 0.9)
 		target.position = CGPoint(x: target.size.width / -2, y: actualY)
@@ -58,7 +58,6 @@ class GameScene: SKScene {
 		let sizeMultiplier: CGFloat = 0.3
 		arrow.size = CGSize(width: arrow.size.width * sizeMultiplier, height: arrow.size.height * sizeMultiplier)
 		arrow.physicsBody = SKPhysicsBody(rectangleOf: arrow.size)
-		print("Arrow size: \(arrow.size)")
 		arrow.physicsBody?.isDynamic = true
 		arrow.physicsBody?.categoryBitMask = PhysicsSettings.arrow
 		arrow.physicsBody?.contactTestBitMask = PhysicsSettings.target
@@ -84,7 +83,6 @@ class GameScene: SKScene {
 extension GameScene : SKPhysicsContactDelegate {
 	
 	func arrowDidCollideWithTarget(arrow: SKSpriteNode, target: SKSpriteNode) {
-		print("Hit")
 		arrow.removeFromParent()
 		target.removeFromParent()
 	}
@@ -101,8 +99,20 @@ extension GameScene : SKPhysicsContactDelegate {
 		}
 		if (firstBody.categoryBitMask & PhysicsSettings.target != 0) && (secondBody.categoryBitMask & PhysicsSettings.arrow != 0) {
 			if let target = firstBody.node as? SKSpriteNode, let arrow = secondBody.node as? SKSpriteNode {
+				checkContactPoint(contactPoint: contact.contactPoint, target: target)
 				arrowDidCollideWithTarget(arrow: arrow, target: target)
 			}
+		}
+	}
+	
+	func checkContactPoint(contactPoint: CGPoint, target: SKSpriteNode) {
+		let leftBorder = target.position.x - target.size.width * 0.25
+		let rightBorder = target.position.x + target.size.width * 0.25
+		
+		if contactPoint.x > leftBorder && contactPoint.x < rightBorder {
+			score += 2
+		} else {
+			score += 1
 		}
 	}
 }
