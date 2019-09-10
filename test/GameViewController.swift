@@ -23,11 +23,24 @@ class GameViewController: UIViewController {
             view.ignoresSiblingOrder = true
             view.showsFPS = true
             view.showsNodeCount = true
-			view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
         }
+//		view.addSubview(imageView)
+//		self.view.sendSubviewToBack(imageView)
 //		view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
     }
 
+	func assignbackground() -> UIView {
+		let background = UIImage(named: "background")
+		
+		var imageView : UIImageView!
+		imageView = UIImageView(frame: view.bounds)
+		imageView.contentMode =  UIView.ContentMode.scaleAspectFill
+		imageView.clipsToBounds = true
+		imageView.image = background
+		imageView.center = view.center
+		return imageView
+	}
+	
 //    override var shouldAutorotate: Bool {
 //        return true
 //    }
