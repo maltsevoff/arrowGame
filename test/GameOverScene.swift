@@ -30,16 +30,6 @@ class GameOverScene: SKScene {
 		againButton.fontColor = SKColor.blue
 		againButton.position = CGPoint(x: label.position.x, y: label.position.y - 30)
 		addChild(againButton)
-		
-//		run(SKAction.sequence([
-//			SKAction.wait(forDuration: 3.0),
-//			SKAction.run() { [weak self] in
-//				guard let `self` = self else { return }
-//				let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-//				let scene = GameScene(size: size)
-//				self.view?.presentScene(scene, transition:reveal)
-//			}
-//			]))
 	}
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
