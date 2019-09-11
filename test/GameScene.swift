@@ -18,12 +18,14 @@ class GameScene: SKScene {
 	var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
 	
 	override func didMove(to view: SKView) {
-//		let background = SKSpriteNode(imageNamed: "background")
-//		background.position = CGPoint(x: size.width / 2, y: size.height / 2)
-//		addChild(background)
+		let background = SKSpriteNode(imageNamed: "background")
+		background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+		background.zPosition = Layer.background
+		addChild(background)
 		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
 		let sizeMultiplier: CGFloat = 0.3
 		arrow.size = CGSize(width: arrow.size.width * sizeMultiplier, height: arrow.size.height * sizeMultiplier)
+		arrow.zPosition = Layer.gameNodes
 		addChild(arrow)
 		physicsWorld.gravity = .zero
 		physicsWorld.contactDelegate = self
@@ -52,7 +54,7 @@ class GameScene: SKScene {
 		target.physicsBody?.categoryBitMask = PhysicsSettings.target
 		target.physicsBody?.contactTestBitMask = PhysicsSettings.arrow
 		target.physicsBody?.collisionBitMask = PhysicsSettings.none
-		
+		target.zPosition = Layer.gameNodes
 		let actualY = size.height * CGFloat.random(in: 0.2 ... 0.9)
 		target.position = CGPoint(x: target.size.width / -2, y: actualY)
 		addChild(target)
@@ -82,6 +84,7 @@ class GameScene: SKScene {
 		arrow.physicsBody?.contactTestBitMask = PhysicsSettings.target
 		arrow.physicsBody?.collisionBitMask = PhysicsSettings.none
 		arrow.physicsBody?.usesPreciseCollisionDetection = true
+		arrow.zPosition = Layer.gameNodes
 		return arrow
 	}
 	
@@ -93,7 +96,7 @@ class GameScene: SKScene {
 
 		let movingArrow = makeArrow(position: arrow.position)
 		addChild(movingArrow)
-		let actionMove = SKAction.move(to: CGPoint(x: movingArrow.position.x, y: size.height + movingArrow.size.height / 2), duration: 1.0)
+		let actionMove = SKAction.move(to: CGPoint(x: movingArrow.position.x, y: size.height + movingArrow.size.height / 2), duration: 0.5)
 		let actionMoveDone = SKAction.removeFromParent()
 		movingArrow.run(SKAction.sequence([actionMove, actionMoveDone]))
 	}
@@ -132,6 +135,7 @@ extension GameScene : SKPhysicsContactDelegate {
 		label.fontSize = 20
 		label.fontColor = SKColor.yellow
 		label.position = CGPoint(x: contactPoint.x + 20, y: contactPoint.y + 20)
+		label.zPosition = Layer.gameNodes
 		addChild(label)
 		let actionWait = SKAction.wait(forDuration: 0.4)
 		let actionMoveDone = SKAction.removeFromParent()
@@ -141,6 +145,7 @@ extension GameScene : SKPhysicsContactDelegate {
 			labelPerfect.fontSize = 20
 			labelPerfect.fontColor = SKColor.yellow
 			labelPerfect.position = CGPoint(x: label.position.x + 30, y: label.position.y - 20)
+			labelPerfect.zPosition = Layer.gameNodes
 			addChild(labelPerfect)
 			labelPerfect.run(SKAction.sequence([actionWait, actionMoveDone]))
 		}
@@ -167,37 +172,37 @@ extension GameScene : SKPhysicsContactDelegate {
 extension GameScene {
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		guard let touch = touches.first else {
-//			return
-//		}
-		for touch in touches {
+		guard let touch = touches.first else {
+			return
+		}
+//		for touch in touches {
 			let pointOfTouch = touch.location(in: self)
 			startTouchPosition = pointOfTouch
 			touchedNodeHolder = nodes(at: pointOfTouch).first
-		}
+//		}
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		guard let touch = touches.first else {
-//			return
-//		}
-		for touch in touches {
+		guard let touch = touches.first else {
+			return
+		}
+//		for touch in touches {
 			let pointOfTouch = touch.location(in: self)
 			if touchedNodeHolder == arrow && pointOfTouch.y < size.width * 0.2 {
 				touchedNodeHolder?.position = CGPoint(x: pointOfTouch.x, y: arrow.position.y)
 			}
-		}
+//		}
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		guard let touch = touches.first else {
-//			return
-//		}
-		for touch in touches {
+		guard let touch = touches.first else {
+			return
+		}
+//		for touch in touches {
 			touchedNodeHolder = nil
 			if startTouchPosition == touch.location(in: self) {
 				shootArrow(touch: touch)
 			}
-		}
+//		}
 	}
 }
