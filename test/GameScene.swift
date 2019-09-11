@@ -18,6 +18,9 @@ class GameScene: SKScene {
 	var scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
 	
 	override func didMove(to view: SKView) {
+//		let background = SKSpriteNode(imageNamed: "background")
+//		background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+//		addChild(background)
 		arrow.position = CGPoint(x: size.width * 0.5, y: size.height * 0.1)
 		let sizeMultiplier: CGFloat = 0.3
 		arrow.size = CGSize(width: arrow.size.width * sizeMultiplier, height: arrow.size.height * sizeMultiplier)
@@ -35,7 +38,7 @@ class GameScene: SKScene {
 	func addScoreLabel() {
 		scoreLabel.text = "Score: \(score)"
 		scoreLabel.fontSize = 20
-		scoreLabel.fontColor = SKColor.black
+		scoreLabel.fontColor = SKColor.yellow
 		scoreLabel.position = CGPoint(x: size.width * 0.1 , y: size.height * 0.9)
 		addChild(scoreLabel)
 	}
@@ -122,14 +125,37 @@ extension GameScene : SKPhysicsContactDelegate {
 		}
 	}
 	
+	func showHitLabel(contactPoint: CGPoint, isPerfect: Bool) {
+		let label = SKLabelNode(fontNamed: "Chalkduster")
+		let message = isPerfect ? "+2" : "+1"
+		label.text = message
+		label.fontSize = 20
+		label.fontColor = SKColor.yellow
+		label.position = CGPoint(x: contactPoint.x + 20, y: contactPoint.y + 20)
+		addChild(label)
+		let actionWait = SKAction.wait(forDuration: 0.4)
+		let actionMoveDone = SKAction.removeFromParent()
+		if isPerfect {
+			let labelPerfect = SKLabelNode(fontNamed: "Chalkduster")
+			labelPerfect.text = "Perfect!"
+			labelPerfect.fontSize = 20
+			labelPerfect.fontColor = SKColor.yellow
+			labelPerfect.position = CGPoint(x: label.position.x + 30, y: label.position.y - 20)
+			addChild(labelPerfect)
+			labelPerfect.run(SKAction.sequence([actionWait, actionMoveDone]))
+		}
+		label.run(SKAction.sequence([actionWait, actionMoveDone]))
+	}
+	
 	func checkContactPoint(contactPoint: CGPoint, target: SKSpriteNode) {
 		let leftBorder = target.position.x - target.size.width * 0.25
 		let rightBorder = target.position.x + target.size.width * 0.25
-		
 		if contactPoint.x > leftBorder && contactPoint.x < rightBorder {
 			score += 2
+			showHitLabel(contactPoint: contactPoint, isPerfect: true)
 		} else {
 			score += 1
+			showHitLabel(contactPoint: contactPoint, isPerfect: false)
 		}
 	}
 	
@@ -141,31 +167,37 @@ extension GameScene : SKPhysicsContactDelegate {
 extension GameScene {
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		guard let touch = touches.first else {
-			return
+//		guard let touch = touches.first else {
+//			return
+//		}
+		for touch in touches {
+			let pointOfTouch = touch.location(in: self)
+			startTouchPosition = pointOfTouch
+			touchedNodeHolder = nodes(at: pointOfTouch).first
 		}
-		let pointOfTouch = touch.location(in: self)
-		startTouchPosition = pointOfTouch
-		touchedNodeHolder = nodes(at: pointOfTouch).first
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-		guard let touch = touches.first else {
-			return
-		}
-		let pointOfTouch = touch.location(in: self)
-		if touchedNodeHolder == arrow && pointOfTouch.y < size.width * 0.2 {
-			touchedNodeHolder?.position = CGPoint(x: pointOfTouch.x, y: arrow.position.y)
+//		guard let touch = touches.first else {
+//			return
+//		}
+		for touch in touches {
+			let pointOfTouch = touch.location(in: self)
+			if touchedNodeHolder == arrow && pointOfTouch.y < size.width * 0.2 {
+				touchedNodeHolder?.position = CGPoint(x: pointOfTouch.x, y: arrow.position.y)
+			}
 		}
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		guard let touch = touches.first else {
-			return
-		}
-		touchedNodeHolder = nil
-		if startTouchPosition == touch.location(in: self) {
-			shootArrow(touch: touch)
+//		guard let touch = touches.first else {
+//			return
+//		}
+		for touch in touches {
+			touchedNodeHolder = nil
+			if startTouchPosition == touch.location(in: self) {
+				shootArrow(touch: touch)
+			}
 		}
 	}
 }
