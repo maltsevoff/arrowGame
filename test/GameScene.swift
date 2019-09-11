@@ -42,6 +42,7 @@ class GameScene: SKScene {
 		scoreLabel.fontSize = 20
 		scoreLabel.fontColor = SKColor.yellow
 		scoreLabel.position = CGPoint(x: size.width * 0.1 , y: size.height * 0.9)
+		scoreLabel.zPosition = Layer.gameNodes
 		addChild(scoreLabel)
 	}
 	

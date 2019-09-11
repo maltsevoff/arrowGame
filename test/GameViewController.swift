@@ -24,9 +24,6 @@ class GameViewController: UIViewController {
             view.showsFPS = true
             view.showsNodeCount = true
         }
-//		view.addSubview(imageView)
-//		self.view.sendSubviewToBack(imageView)
-//		view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
     }
 
 	func assignbackground() -> UIView {
@@ -41,19 +38,11 @@ class GameViewController: UIViewController {
 		return imageView
 	}
 	
-//    override var shouldAutorotate: Bool {
-//        return true
-//    }
-//
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        if UIDevice.current.userInterfaceIdiom == .phone {
-//            return .allButUpsideDown
-//        } else {
-//            return .all
-//        }
-//    }
-//
-//    override var prefersStatusBarHidden: Bool {
-//        return true
-//    }
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+	
+	override var prefersHomeIndicatorAutoHidden: Bool {
+		return true
+	}
 }
